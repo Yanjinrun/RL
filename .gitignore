@@ -1,13 +1,33 @@
 # 排除大数据文件
 user_simulator/data/patient_structured/patient_structured_all_desensitize.json
+user_simulator/data/patient_structured/patient_structured_50_desensitize.json
 
 # Python 临时文件
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+.Python
 venv/
 .venv/
+env/
+ENV/
 
+# 输出文件（生成的文件，可能很大）
+user_simulator/output/
+*.jsonl
 
 # 日志文件
 *.log
 *.tmp
+
+# IDE文件
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 系统文件
+.DS_Store
+Thumbs.db
