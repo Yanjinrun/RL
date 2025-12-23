@@ -1,2 +1,13 @@
-# 排除指定的大数据文件
-project/user_simulator/data/patient_structured/patient_structured_all_desensitize.json
+# 排除大数据文件
+user_simulator/data/patient_structured/patient_structured_all_desensitize.json
+
+# Python 临时文件
+__pycache__/
+*.pyc
+venv/
+.venv/
+
+
+# 日志文件
+*.log
+*.tmp
