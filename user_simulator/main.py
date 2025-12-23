@@ -10,8 +10,7 @@ from scripts import (
     PersonaGenerator,
     BackgroundGenerator,
     StoryGenerator,
-    DialogueGenerator,
-    SFTDataExporter
+    DialogueGenerator
 )
 import config
 
@@ -192,10 +191,6 @@ def main():
     parser.add_argument("--api-key", type=str, help="API密钥")
     parser.add_argument("--output", type=str, help="输出文件路径")
     parser.add_argument("--max-turns", type=int, default=10, help="最大对话轮数")
-    parser.add_argument("--export-sft", action="store_true", help="导出为SFT训练格式")
-    parser.add_argument("--sft-format", type=str, choices=["messages", "conversation", "instruction", "llamafactory", "all"],
-                       default="messages", help="SFT数据格式")
-    parser.add_argument("--sft-output-dir", type=str, default="output/sft_data", help="SFT数据输出目录")
     
     args = parser.parse_args()
     
@@ -292,25 +287,6 @@ def main():
             with open(output_path, 'w', encoding='utf-8') as f:
                 json.dump(full_data, f, ensure_ascii=False, indent=2)
             print(f"\n对话已保存到: {output_path}")
-        
-        # 导出SFT格式数据
-        if args.export_sft:
-            print("\n=== 导出SFT训练数据 ===")
-            sft_formats = ["messages", "conversation", "instruction", "llamafactory"] if args.sft_format == "all" else [args.sft_format]
-            
-            # 准备对话数据（转换为列表格式）
-            conversations = [full_data]
-            
-            # 导出
-            output_files = SFTDataExporter.export_to_multiple_formats(
-                conversations=conversations,
-                output_dir=args.sft_output_dir,
-                formats=sft_formats
-            )
-            
-            print("\nSFT数据已导出:")
-            for format_name, file_path in output_files.items():
-                print(f"  - {format_name}格式: {file_path}")
 
 
 if __name__ == "__main__":

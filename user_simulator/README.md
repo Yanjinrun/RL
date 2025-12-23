@@ -23,7 +23,7 @@ pip install -r requirements.txt
 # 生成完整对话（默认模式）
 python main.py --mode conversation --topic "对话主题" --max-turns 10
 
-# 只生成患者画像
+# 只生成患者画像 data文件夹被gitignore了，需要自己创建并下载一下
 python main.py --mode persona --persona-file data/patient_structured/patient_structured_50_desensitize.json
 
 # 只生成24小时生活状态
@@ -138,124 +138,10 @@ result = generator.generate_response(
 )
 ```
 
-## SFT数据导出
-
-用户模拟器生成的对话数据可以导出为SFT（监督微调）训练所需的格式，方便与SFT部分的工作衔接。
-
-### 支持的格式
-
-1. **messages格式（推荐）**: 适用于transformers库和Qwen模型
-   ```json
-   {
-     "messages": [
-       {"role": "user", "content": "..."},
-       {"role": "assistant", "content": "..."}
-     ],
-     "metadata": {...}
-   }
-   ```
-
-2. **conversation格式**: 适用于某些自定义训练框架
-   ```json
-   {
-     "conversation": [
-       {"role": "user", "content": "..."},
-       {"role": "assistant", "content": "..."}
-     ]
-   }
-   ```
-
-3. **instruction格式**: 适用于instruction-following训练
-   ```json
-   {
-     "instruction": "系统提示",
-     "input": "用户输入",
-     "output": "助手输出"
-   }
-   ```
-
-4. **llamafactory格式**: 适用于LLaMA-Factory训练框架
-   ```json
-   {
-     "conversation": [
-       {"from": "human", "value": "..."},
-       {"from": "gpt", "value": "..."}
-     ]
-   }
-   ```
-
-### 使用方法
-
-#### 方法1: 使用命令行导出
-
-```bash
-# 生成对话并自动导出SFT数据
-python3 main.py --mode conversation \
-  --topic "对话主题" \
-  --max-turns 10 \
-  --export-sft \
-  --sft-format messages \
-  --sft-output-dir output/sft_data
-```
-
-#### 方法2: 使用Python代码导出
-
-```python
-from scripts import SFTDataExporter
-
-# 准备对话数据（从用户模拟器生成）
-conversations = [
-    {
-        "dialogue_history": [
-            {"role": "user", "content": "患者说的话"},
-            {"role": "assistant", "content": "照护师说的话"}
-        ],
-        "persona": {...},
-        "background": "...",
-        "story": "...",
-        "dialogue_topic": "..."
-    }
-]
-
-# 导出为messages格式（JSONL）
-SFTDataExporter.export_to_messages_format(
-    conversations=conversations,
-    output_path="output/sft_data.jsonl",
-    include_metadata=True
-)
-
-# 或一次性导出所有格式
-output_files = SFTDataExporter.export_to_multiple_formats(
-    conversations=conversations,
-    output_dir="output/sft_data",
-    formats=["messages", "conversation", "instruction", "llamafactory"]
-)
-```
-
-#### 方法3: 运行示例脚本
-
-```bash
-python3 export_sft_example.py
-```
-
-### 数据格式说明
-
-**messages格式（JSONL）**：
-- 每行一个JSON对象
-- 包含`messages`数组，格式为`[{"role": "user/assistant", "content": "..."}]`
-- 可选包含`metadata`字段，保存患者画像、背景等信息
-- **推荐使用此格式**，适用于transformers库和Qwen模型
-
-**注意事项**：
-- 当前用户模拟器只生成患者对话，需要配合照护师回复才能用于SFT训练
-- 如果对话以患者发言结束，会自动添加`[需要照护师回复]`占位符
-- metadata字段包含完整的患者画像和背景信息，可用于训练时的上下文理解
-
 ## 注意事项
 
 1. 确保API密钥有效且有足够的配额
 2. 生成对话时，建议先生成背景和故事，再生成对话
 3. 对话生成遵循"开场→互动→聚焦→收束"的节奏
 4. 每轮对话长度控制在8-30字，最多40字
-5. SFT数据导出时，确保对话包含患者和照护师的完整对话对
 
