@@ -10,8 +10,8 @@ from scripts import (
     PersonaGenerator,
     BackgroundGenerator,
     StoryGenerator,
-    DialogueGenerator
-)
+    DialogueGenerator,
+    HealthAssistantGenerator)
 import config
 
 
@@ -33,6 +33,8 @@ class UserSimulator:
         self.background_generator = BackgroundGenerator(self.api_client)
         self.story_generator = StoryGenerator(self.api_client)
         self.dialogue_generator = DialogueGenerator(self.api_client)
+        self.health_assistant_generator = HealthAssistantGenerator(self.api_client)
+
     
     def generate_persona(self, raw_persona: dict) -> dict:
         """
@@ -110,6 +112,29 @@ class UserSimulator:
         )
         print("患者对话生成完成！")
         return result
+
+    def generate_health_assistant_turn(
+        self, 
+        persona: dict, 
+        dialogue_topic: str,
+        background: str,
+        dialogue_history: list,
+        story: str = None) -> str:
+        """
+        生成健康助手回复
+        """
+        print("正在生成健康助手回复...")
+        reply = self.health_assistant_generator.generate_reply(
+            persona=persona,
+            dialogue_topic=dialogue_topic,
+            background=background,
+            dialogue_history=dialogue_history,
+            story=story
+        )
+        print("健康助手回复生成完成！")
+        return reply
+                                      
+   
     
     def simulate_conversation(self,
                              persona: dict,
@@ -161,6 +186,22 @@ class UserSimulator:
             
             # 这里可以添加照护师回复的逻辑
             # 目前只生成患者对话
+
+            # ---------- 健康助手 ----------
+            assistant_reply = self.generate_health_assistant_turn(
+                persona=persona,
+                dialogue_topic=dialogue_topic,
+                background=background,
+                dialogue_history=dialogue_history,
+                story=story
+            )
+
+            dialogue_history.append({
+                "role": "assistant",
+                "content": assistant_reply
+            })
+
+            print(f"健康助手: {assistant_reply}")
         
         if return_full_data:
             return {
@@ -172,6 +213,8 @@ class UserSimulator:
             }
         else:
             return dialogue_history
+
+
 
 
 def load_persona_from_json(file_path: str) -> dict:

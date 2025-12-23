@@ -6,12 +6,16 @@ from .persona_generator import PersonaGenerator
 from .background_generator import BackgroundGenerator
 from .story_generator import StoryGenerator
 from .dialogue_generator import DialogueGenerator
+from .dialogue_generator import DialogueGenerator
+from .health_assistant_generator import HealthAssistantGenerator
 
 __all__ = [
     "QwenAPIClient",
     "PersonaGenerator",
     "BackgroundGenerator",
     "StoryGenerator",
-    "DialogueGenerator"
+    "DialogueGenerator",
+    "HealthAssistantGenerator"
+
 ]
 

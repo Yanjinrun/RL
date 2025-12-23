@@ -26,7 +26,7 @@ class QwenAPIClient:
     
     def call(self, 
              prompt: str, 
-             model: str = "qwen-plus",
+             model: str = "qwen-flash",
              temperature: float = 0.7,
              max_tokens: int = 2000,
              top_p: float = 0.8,
@@ -68,7 +68,7 @@ class QwenAPIClient:
                 self.base_url,
                 headers=self.headers,
                 json=payload,
-                timeout=60
+                timeout=600
             )
             response.raise_for_status()
             
