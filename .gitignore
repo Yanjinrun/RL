@@ -1,0 +1,2 @@
+# 排除指定的大数据文件
+project/user_simulator/data/patient_structured/patient_structured_all_desensitize.json
