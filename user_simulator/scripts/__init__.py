@@ -8,6 +8,9 @@ from .story_generator import StoryGenerator
 from .dialogue_generator import DialogueGenerator
 from .dialogue_generator import DialogueGenerator
 from .health_assistant_generator import HealthAssistantGenerator
+from .health_assistant_generator_thinking import HealthAssistantGenerator_thinking
+
+
 
 __all__ = [
     "QwenAPIClient",
