@@ -22,6 +22,8 @@ pip install -r requirements.txt
 ```bash
 # 生成完整对话（默认模式）
 python main.py --mode conversation --topic "对话主题" --max-turns 10
+#生成完整的对话（随机生成对话主题，不限制对话次数）
+python main_random_topic.py   
 
 # 只生成患者画像 data文件夹被gitignore了，需要自己创建并下载一下
 python main.py --mode persona --persona-file data/patient_structured/patient_structured_50_desensitize.json
@@ -63,7 +65,7 @@ user_simulator/
 │   ├── __init__.py
 │   ├── api_client.py          # API客户端
 │   ├── persona_generator.py   # 患者画像生成
-│   ├── background_generator.py # 背景生成
+│   ├── background_generator_thinking.py # 背景生成
 │   ├── story_generator.py     # 故事生成
 │   └── dialogue_generator.py  # 对话生成
 ├── config.py                  # 配置文件
