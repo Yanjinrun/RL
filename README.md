@@ -65,7 +65,7 @@ user_simulator/
 │   ├── __init__.py
 │   ├── api_client.py          # API客户端
 │   ├── persona_generator.py   # 患者画像生成
-│   ├── background_generator_thinking.py # 背景生成
+│   ├── background_generator.py # 背景生成
 │   ├── story_generator.py     # 故事生成
 │   └── dialogue_generator.py  # 对话生成
 ├── config.py                  # 配置文件
