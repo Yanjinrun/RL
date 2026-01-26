@@ -4,7 +4,7 @@
 import os
 
 # API配置
-API_KEY = os.getenv("QWEN_API_KEY", "sk-28ba183df44f4a89a56a8e18daf629e6")
+API_KEY = os.getenv("QWEN_API_KEY", )
 API_BASE_URL = "https://dashscope.aliyuncs.com/api/v1/services/aigc/text-generation/generation"
 
 # 模型配置
