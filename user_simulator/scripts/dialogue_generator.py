@@ -44,8 +44,8 @@ class DialogueGenerator:
         result = self.api_client.call(
             prompt=prompt,
             model="qwen-plus",
-            temperature=0.8,
-            max_tokens=500
+            temperature=0.65,
+            max_tokens=2000
         )
         
         # 解析结果
@@ -67,11 +67,22 @@ class DialogueGenerator:
 ②互动或补充：补充自己的关键要素，或者回应照护师的追问，目的是进一步明确自己的诉求。
 ③聚焦结果：判断照护师的结论或建议是否聚焦对话主题，是否满足自己的要求，以及是否解答自己的疑问。
 ④收束对话：若已经完成对话主题的交流目的，交流问题已全覆盖，即可收束对话。
+2.**超级重要收束规则（必须严格遵守，优先级最高！）**：
+- 如果照护师已经连续2~3次给出安慰、建议或解答，且你的疑问本质上已解决（即使还有小细节），**本轮必须主动收束**。
+- 收束方式：用自然结束语，如“谢谢，我明白了”“嗯，感觉好多了”“那我先试试看”“聊了这么多，心里有底了，谢谢～”“谢谢，我先去尝试一下”。
+- **禁止无限追问**：如果本轮问题和上上轮问题本质相同（只是换了场景/说法），视为重复，必须收束而不是继续问。
+- 当前对话已进行 {current_turn} 轮（替换为实际轮次）。如果轮次 >= 10，你有50%概率选择收束，而不是继续提问。
+- 每回合只做1件事（陈述/回答/确认/提问四选一），最多1个问题。
+- 长度约束：每回合8~30字为主；必要时可到40字，也可能短至1~5个字。但不得推倒多个话题。
 2. 每回合动作上限：只做1件事（陈述/回答/确认/提问四选一），最多1个问题。
 3. 每回合数据上限：最多只能提供1个新的数据。
 4. 长度约束：每回合8~30字为主；必要时可到40字，也可能根据患者用户画像的具体特点，短至1~5个字的回复。但不得推倒多个话题。
 5. 主题聚焦：只围绕对话主题推进；不得在第1~2回合主动提名/判断名/要求处方。
 6. 承接对方：根据患者用户画像的特点，决定是否回应上一句照护师的回复。
+7.收束触发条件：- 如果照护师已经连续2~3次给出你真正关心的答案/建议/安慰，且你内心觉得“差不多懂了/安心了”，必须立刻收束。
+   - 收束方式：可以说“谢谢，我明白了”“嗯，感觉好多了”“那我先试试看”“我先消化一下，谢谢你”“今天聊得差不多了”等自然结束语。
+   - 禁止无限追问：如果本轮问题和上上轮问题本质相同（只是换了场景/说法），视为重复，必须收束而不是继续问。
+   - 轮次达到12~18轮时，如果还没收束，也要主动温和结束（例如：“聊了这么多，我心里有底了，谢谢你～”）。
 
 ### 任务要求
 1. 回合制对话的内容，请围绕对话主题，不要跑题。
@@ -138,6 +149,8 @@ Response:
         else:
             prompt += "### 对话上下文\n对话开始，你是患者，请你先发起话题，用简短的回复开启倾听\n\n"
         
+        prompt = prompt.replace("{current_turn}", str(len(dialogue_history) + 1))  # 在返回prompt前替换
+
         return prompt
     
     def _parse_response(self, response: str) -> Dict[str, str]:
@@ -155,23 +168,31 @@ Response:
             "response": ""
         }
         
-        # 尝试解析格式化的输出
-        if "Thinking:" in response:
-            parts = response.split("Thinking:", 1)
-            if len(parts) > 1:
-                thinking_part = parts[1]
-                if "Response:" in thinking_part:
-                    thinking, response_part = thinking_part.split("Response:", 1)
-                    result["thinking"] = thinking.strip()
-                    result["response"] = response_part.strip()
-                else:
-                    result["thinking"] = thinking_part.strip()
-        elif "Response:" in response:
+        # # 尝试解析格式化的输出
+        # if "Thinking:" in response:
+        #     parts = response.split("Thinking:", 1)
+        #     if len(parts) > 1:
+        #         thinking_part = parts[1]
+        #         if "Response:" in thinking_part:
+        #             thinking, response_part = thinking_part.split("Response:", 1)
+        #             result["thinking"] = thinking.strip()
+        #             result["response"] = response_part.strip()
+        #         else:
+        #             result["thinking"] = thinking_part.strip()
+        # elif "Response:" in response:
+        #     parts = response.split("Response:", 1)
+        #     result["response"] = parts[1].strip()
+        # else:
+        #     # 如果没有明确格式，将整个响应作为response
+        #     result["response"] = response.strip()
+        
+        # return result
+
+        if "Response:" in response:
             parts = response.split("Response:", 1)
             result["response"] = parts[1].strip()
         else:
-            # 如果没有明确格式，将整个响应作为response
             result["response"] = response.strip()
-        
+    
         return result
 

@@ -26,7 +26,7 @@ class QwenAPIClient:
     
     def call(self, 
              prompt: str, 
-             model: str = "qwen-flash",
+             model: str = "qwen-plus",
              temperature: float = 0.7,
              max_tokens: int = 2000,
              top_p: float = 0.8,

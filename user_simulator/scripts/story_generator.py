@@ -36,7 +36,7 @@ class StoryGenerator:
         result = self.api_client.call(
             prompt=prompt,
             model="qwen-plus",
-            temperature=0.8,      # 可根据需要调整为 0.7 以获得更稳定的输出
+            temperature=0.8,      
             max_tokens=800
         )
         
