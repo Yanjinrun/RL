@@ -8,6 +8,7 @@ from .story_generator import StoryGenerator
 from .dialogue_generator import DialogueGenerator
 from .health_assistant_generator import HealthAssistantGenerator
 from .generic_ai_generator import GenericAIGenerator
+from .dialogue_generator import DialogueGenerator
 from .health_assistant_generator_thinking import HealthAssistantGenerator_thinking
 
 

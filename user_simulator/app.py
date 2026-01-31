@@ -14,8 +14,7 @@ def load_data(filepath):
             conversations.append(json.loads(line))
     return conversations
 
-conversations = load_data("/Users/ningjia/Desktop/jiu_an/output_with_class.jsonl")
-
+conversations = load_data("/home/yjr/rl-health-dialogue/user_simulator/dialogues/all_dialogues_assistant_thinking.jsonl")
 # Sidebar for navigation
 st.sidebar.header("Navigation")
 conv_idx = st.sidebar.selectbox(
